@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-primary-exporter
+  namespace: monitoring
+  labels:
+    app: redis-exporter
+    role: primary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-exporter
+      role: primary
+  template:
+    metadata:
+      labels:
+        app: redis-exporter
+        role: primary
+    spec:
+      containers:
+      - name: redis-exporter
+        image: oliver006/redis_exporter:latest
+        args:
+          - "--redis.addr=redis-primary.default.svc.cluster.local:6379"
+        ports:
+        - containerPort: 9121
+          name: metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-primary-exporter
+  namespace: monitoring
+  labels:
+    app: redis-exporter
+    role: primary
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9121
+      targetPort: 9121
+  selector:
+    app: redis-exporter
+    role: primary
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-read-replica-exporter
+  namespace: monitoring
+  labels:
+    app: redis-exporter
+    role: read-replica
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-exporter
+      role: read-replica
+  template:
+    metadata:
+      labels:
+        app: redis-exporter
+        role: read-replica
+    spec:
+      containers:
+      - name: redis-exporter
+        image: oliver006/redis_exporter:latest
+        args:
+          - "--redis.addr=redis-replica.default.svc.cluster.local:6379"
+        ports:
+        - containerPort: 9121
+          name: metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-read-replica-exporter
+  namespace: monitoring
+  labels:
+    app: redis-exporter
+    role: read-replica
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9121
+      targetPort: 9121
+  selector:
+    app: redis-exporter
+    role: read-replica
+
