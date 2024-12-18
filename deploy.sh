@@ -30,7 +30,9 @@ kubectl apply -f app-config.yaml
 kubectl apply -f api-server.yaml
 kubectl apply -f worker-server.yaml
 kubectl apply -f client.yaml
-microk8s kubectl port-forward service/frontend 3000:3000 &
+sleep 20
+minikube kubectl port-forward service/api-server 8080:80 &
+minikube kubectl port-forward service/frontend 3000:80 &
 
 #------------------ monitoring ------------------------------------
 kubectl apply -f prometheus.yaml
@@ -38,4 +40,5 @@ kubectl apply -f redis-exporter.yaml
 kubectl apply -f node-exporter.yaml
 kubectl apply -f grafana.yaml
 kubectl apply -f rbac-monitoring.yaml
-microk8s kubectl port-forward service/grafana 3000:3000 &
+sleep 40
+minikube kubectl -- port-forward service/grafana 8000:3000 -n monitoring &
