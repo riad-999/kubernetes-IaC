@@ -10,6 +10,9 @@ In this project the deployment consist of :
 5.  metrics exporters: node exporter, redis exporter
 6.  prometheus & grafana for monitoring the metrics
 
+### **Deployment** 
+- for the deployment all is needed is to execute the shell script `deploy.sh`
+
 ### **Backend Part**
 - the file `api-server.yaml` contains the deployment details and the service and HPA for the backend pods.
 - the file `worker-server.yaml` contains the deployment details and the service for the backend workers (redis subscribers) pods.
